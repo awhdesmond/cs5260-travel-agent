@@ -108,7 +108,6 @@ curl -s -X POST http://localhost:8000/plan/<itinerary_plan_id>/confirm \
 | `/health` | GET | Health check with graph readiness |
 | `/auth/login` | POST | JWT authentication |
 | `/itineraries` | GET | User's saved itinerary history |
-| `/metrics/export?format=csv` | GET | Export all run metrics as CSV |
 
 ## Architecture
 

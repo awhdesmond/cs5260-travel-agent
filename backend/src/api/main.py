@@ -18,7 +18,6 @@ from src.agents.swarm.graph import SWARM_RECURSION_LIMIT, build_swarm_graph
 from src.api.middleware.rate_limit import limiter
 from src.api.routes.auth import router as auth_router
 from src.api.routes.itineraries import router as itineraries_router
-from src.api.routes.metrics import router as metrics_router
 from src.api.routes.plan import router as plan_router
 from src.api.routes.plan_edit import router as edit_router
 from src.api.routes.plan_select import router as select_router
@@ -78,7 +77,6 @@ app.include_router(plan_router)
 app.include_router(stream_router)
 app.include_router(select_router)
 app.include_router(edit_router)
-app.include_router(metrics_router)
 app.include_router(auth_router, prefix="/auth")
 app.include_router(itineraries_router, prefix="/itineraries")
 
