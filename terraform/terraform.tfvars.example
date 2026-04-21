@@ -1,0 +1,7 @@
+# Copy this file to terraform.tfvars and fill in your Project ID.
+project_id = "YOUR_GCP_PROJECT_ID"
+# region = "us-central1"
+# zone = "us-central1-a"
+# machine_type = "e2-medium"
+# ssh_user = "ubuntu"
+# ssh_pub_key_path = "~/.ssh/id_rsa.pub"

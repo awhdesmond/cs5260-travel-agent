@@ -1,0 +1,28 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+dist/
+*.egg-info/
+
+# Secrets
+.env
+
+# Node
+node_modules/
+.next/
+
+# IDE
+.DS_Store
+.vscode/
+.idea/
+.mcp.json
+
+# Docker
+pgdata/
+
+# Walkthrough
+CHECKLIST.md
+.claude/worktrees/
