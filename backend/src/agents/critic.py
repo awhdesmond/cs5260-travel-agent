@@ -10,7 +10,7 @@ from src.prompts.critic import (
     TASK_INSTRUCTIONS_CLEAN,
     TASK_INSTRUCTIONS_VIOLATIONS,
 )
-from src.state.models import (
+from src.state.violations import (
     CriticFeedback,
     EmptyDayViolation,
     GeographicViolation,
