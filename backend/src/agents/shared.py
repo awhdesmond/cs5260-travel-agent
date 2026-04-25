@@ -9,7 +9,7 @@ from src.db.repository import cache_lookup, cache_save
 from src.prompts.day_planner_single_day import SINGLE_DAY_PLANNER_PROMPT
 from src.state.models import DayPlan
 from src.tools.grounding import extract_json_from_response
-from src.utils import classify_travel_buffer, haversine
+from src.utils import haversine
 from src.tools.grounding import normalize_content
 
 logger = logging.getLogger(__name__)

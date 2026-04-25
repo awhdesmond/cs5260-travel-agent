@@ -16,39 +16,31 @@ def haversine(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
     return 2 * EARTH_RADIUS_KM * math.asin(math.sqrt(a))
 
 
-def classify_travel_buffer(distance_km: float) -> tuple[int, str]:
-    """
-    Return (buffer_minutes, mode) based on haversine distance.
-
-    Thresholds: <1.5 km -> walk (15 min), <=5 km -> public transport (30 min),
-    >5 km -> grounding_required (-1 min).
-    """
-    if distance_km < 1.5:
-        return 15, "walk"
-    elif distance_km <= 5.0:
-        return 30, "public transport"
-    else:
-        return -1, "grounding_required"
-
-
 def median_latlng(items: list[dict]) -> tuple[float, float] | None:
     """
     Return median lat/lng of items that have coordinates. Returns None if empty.
     """
     lats = [a["lat"] for a in items if a.get("lat") is not None]
     lngs = [a["lng"] for a in items if a.get("lng") is not None]
-    if not lats:
+
+    if not lats or not lngs:
         return None
+
     return statistics.median(lats), statistics.median(lngs)
 
 
-
 def parse_time(t: str) -> time:
+    """
+    Split a time string in HH:MM format and return a time object.
+    """
     h, m = t.split(":")
     return time(int(h), int(m))
 
 
 def parse_duration_minutes(dur: str | None) -> int:
+    """
+    Parse a duration string in HHMM format and return the duration in minutes.
+    """
     if not dur:
         return 0
     try:

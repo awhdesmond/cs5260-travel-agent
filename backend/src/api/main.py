@@ -10,12 +10,9 @@ load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from slowapi.errors import RateLimitExceeded
-from slowapi.middleware import SlowAPIMiddleware
 
 from src.agents.supervisor.graph import SUPERVISOR_RECURSION_LIMIT, build_supervisor_graph
 from src.agents.swarm.graph import SWARM_RECURSION_LIMIT, build_swarm_graph
-from src.api.middleware.rate_limit import limiter
 from src.api.routes.auth import router as auth_router
 from src.api.routes.itineraries import router as itineraries_router
 from src.api.routes.plan import router as plan_router
@@ -52,9 +49,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.state.limiter = limiter
-app.add_middleware(SlowAPIMiddleware)
-
 # CORS registered after SlowAPI (middleware runs in reverse registration order)
 app.add_middleware(
     CORSMiddleware,
@@ -63,14 +57,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.exception_handler(RateLimitExceeded)
-async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
-    return JSONResponse(
-        status_code=429,
-        content={"detail": "Rate limit exceeded. Please try again later."},
-    )
 
 
 app.include_router(plan_router)

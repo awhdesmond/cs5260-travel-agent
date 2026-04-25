@@ -9,7 +9,7 @@ from src.agents.edit import (
     _rerun_transport,
     edit_itinerary_node,
 )
-from src.auth.jwt import get_current_user
+from src.utils.jwt import get_current_user
 from src.db.repository import get_plan_options, save_thread_state, update_itinerary_data
 
 router = APIRouter()

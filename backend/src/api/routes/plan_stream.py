@@ -10,9 +10,9 @@ from sse_starlette.sse import EventSourceResponse
 
 from src.api.models.requests import PlanRequest
 from src.api.routes.plan import make_initial_state  # shared factory
-from src.auth.jwt import get_current_user
+from src.utils.jwt import get_current_user
 from src.db.repository import insert_run, save_itinerary
-from src.guards import check_token_budget
+from src.utils.guards import check_token_budget
 from src.db.repository import get_plan_options, save_thread_state, save_plan_options
 router = APIRouter()
 

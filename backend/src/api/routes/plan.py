@@ -9,9 +9,9 @@ from langchain_core.messages import HumanMessage
 
 from src.api.models.requests import ConfirmRequest, PlanRequest
 from src.api.models.responses import BookingConfirmation, PlanResponse, RunMetrics
-from src.auth.jwt import get_current_user
+from src.utils.jwt import get_current_user
 from src.db.repository import insert_run, save_itinerary, get_itinerary_by_id, update_itinerary_status
-from src.guards import check_token_budget
+from src.utils.guards import check_token_budget
 
 router = APIRouter()
 

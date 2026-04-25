@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 from src.api.routes.plan import process_booking_mode_from_plans
 from src.agents.shared import enrich_itinerary_coords
-from src.auth.jwt import get_current_user
+from src.utils.jwt import get_current_user
 from src.db.repository import get_itinerary_by_id, get_user_itineraries, save_itinerary
 
 router = APIRouter()

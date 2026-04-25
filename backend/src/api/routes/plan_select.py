@@ -11,7 +11,7 @@ from src.agents.critic import critic_node
 from src.agents.meal import meal_generation_node
 from src.agents.shared import cache_write_node, day_planner_node_per_day, enrich_itinerary_coords
 from src.api.models.requests import MealSelectRequest, PlanSelectRequest
-from src.auth.jwt import get_current_user
+from src.utils.jwt import get_current_user
 from src.db.repository import get_plan_options, save_itinerary, save_plan_options, save_thread_state
 
 
