@@ -1,11 +1,7 @@
+import os
 import logging
-from contextlib import asynccontextmanager
-from pathlib import Path
-
 from dotenv import load_dotenv
-
-# Load .env before LLM initialization
-load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,6 +16,9 @@ from src.api.routes.plan_edit import router as edit_router
 from src.api.routes.plan_select import router as select_router
 from src.api.routes.plan_stream import router as stream_router
 
+
+# Load .env before LLM initialization
+load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -52,7 +51,7 @@ app = FastAPI(
 # CORS registered after SlowAPI (middleware runs in reverse registration order)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174", "http://34.126.173.27"],
+    allow_origins=os.getenv("CORS_ALLOWED_ORIGINS").split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -69,9 +68,13 @@ app.include_router(itineraries_router, prefix="/itineraries")
 
 @app.get("/health")
 async def health(request: Request):
-    """Health check with per-graph readiness flags. Returns 503 if either graph failed."""
+    """
+    Health check with per-graph readiness flags.
+    Returns 503 if either graph failed.
+    """
     supervisor_ready = getattr(request.app.state, "supervisor_graph", None) is not None
     swarm_ready = getattr(request.app.state, "swarm_graph", None) is not None
+
     is_degraded = not supervisor_ready or not swarm_ready
     content = {
         "status": "degraded" if is_degraded else "ok",
