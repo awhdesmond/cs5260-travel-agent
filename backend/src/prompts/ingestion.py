@@ -24,20 +24,3 @@ TEXT_EXTRACTION_PROMPT: str = (
     "Text: {text}\n\n"
     + _COMMON_FIELDS
 )
-
-IMAGE_EXTRACTION_PROMPT: str = (
-    "Analyze this image for travel intent.\n\n"
-    "CRITICAL: Set needs_clarification=true if not travel-related.\n"
-    "Mark ALL uncertain fields in low_confidence_fields (images are inherently uncertain).\n"
-    "travel_dates is typically null for images.\n\n"
-    + _COMMON_FIELDS
-    + "\n\nIf not travel-related, set destinations to null and note in extraction_notes."
-)
-
-URL_EXTRACTION_PROMPT: str = (
-    "Extract travel planning information from this scraped web page.\n\n"
-    "CRITICAL: Set needs_clarification=true if no extractable travel information.\n"
-    "Mark uncertain fields in low_confidence_fields. Note currency conversions in extraction_notes.\n\n"
-    "Page URL: {url}\nPage Title: {title}\nContent:\n{content}\n\n{partial_warning}\n\n"
-    + _COMMON_FIELDS
-)
