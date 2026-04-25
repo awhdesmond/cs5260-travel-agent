@@ -1,11 +1,11 @@
 import json
 import logging
 
-from src.agents.llm import get_gemini_model
+from src.agents.llm import get_gemini_model, extract_json_from_response
 from src.db.repository import meal_cache_lookup, meal_cache_save
 from src.prompts.meal import MEAL_SEARCH_PROMPT
 from src.state.models import MealOption, MealSlotOptions
-from src.tools.grounding import extract_json_from_response, get_maps_grounding_tool
+from src.tools.grounding import get_maps_grounding_tool
 from src.tools.places import enrich_with_places_api, get_place_photo_url
 from src.utils import haversine
 

@@ -3,13 +3,10 @@ from datetime import date
 from langchain_core.messages import HumanMessage, SystemMessage
 from pydantic import ValidationError
 
-from src.agents.llm import get_gemini_model
+from src.agents.llm import get_gemini_model, extract_json_from_response
 from src.prompts.activities import ACTIVITIES_SEARCH_PROMPT
 from src.state.models import ActivitiesPlan, ActivityOption, CityActivities
-from src.tools.grounding import (
-    extract_json_from_response,
-    get_maps_grounding_tool,
-)
+from src.tools.grounding import get_maps_grounding_tool
 from src.tools.places import USE_GOOGLE_PLACES, enrich_with_places_api, get_place_photo_url
 
 import logging

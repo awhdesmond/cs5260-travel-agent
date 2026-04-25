@@ -3,10 +3,10 @@ import json
 from langchain_core.messages import HumanMessage, SystemMessage
 from pydantic import ValidationError
 
-from src.agents.llm import get_gemini_model
+from src.agents.llm import get_gemini_model, extract_json_from_response
 from src.prompts.transport import INTERCITY_TRANSPORT_PROMPT
 from src.state.models import InterCityTransportPlan
-from src.tools.grounding import extract_json_from_response, get_grounding_tool
+from src.tools.grounding import get_search_grounding_tool
 from src.state.blackboard import TravelBlackboard
 
 
@@ -47,7 +47,7 @@ async def intercity_transport_node(state: "TravelBlackboard") -> dict:
     system_prompt = INTERCITY_TRANSPORT_PROMPT.replace("{max_options}", str(max_options))
 
     llm = get_gemini_model()
-    llm_with_search = llm.bind_tools([get_grounding_tool()])
+    llm_with_search = llm.bind_tools([get_search_grounding_tool()])
 
     messages = [SystemMessage(content=system_prompt), HumanMessage(content=prompt)]
 

@@ -2,8 +2,15 @@
 import os
 import httpx
 
-USE_GOOGLE_PLACES: bool = os.getenv("USE_GOOGLE_PLACES", "true").lower() == "true"
-GOOGLE_MAPS_API_KEY: str = os.getenv("GOOGLE_MAPS_API_KEY", "")
+ENV_USE_GOOGLE_PLACES = "USE_GOOGLE_PLACES"
+ENV_GOOGLE_MAPS_API_KEY = "GOOGLE_MAPS_API_KEY"
+
+USE_GOOGLE_PLACES: bool = os.getenv(ENV_USE_GOOGLE_PLACES, "true").lower() == "true"
+GOOGLE_MAPS_API_KEY: str = os.getenv(ENV_GOOGLE_MAPS_API_KEY, "")
+
+
+GOOGLE_PLACES_V1_URL = "https://places.googleapis.com/v1"
+GOOGLE_PLACES_BASE_URL = f"{GOOGLE_PLACES_V1_URL}/places"
 
 
 async def enrich_with_places_api(activity_name: str, city: str) -> dict:
@@ -13,8 +20,7 @@ async def enrich_with_places_api(activity_name: str, city: str) -> dict:
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             # text search first, just to grab the place_id
-            text_search_resp = await client.post(
-                "https://places.googleapis.com/v1/places:searchText",
+            text_search_resp = await client.post(f"{GOOGLE_PLACES_BASE_URL}/places:searchText",
                 headers={
                     "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY,
                     "X-Goog-FieldMask": "places.id",
@@ -30,7 +36,7 @@ async def enrich_with_places_api(activity_name: str, city: str) -> dict:
 
             # then fetch address + lat/lng
             detail_resp = await client.get(
-                f"https://places.googleapis.com/v1/places/{place_id}",
+                f"{GOOGLE_PLACES_BASE_URL}/{place_id}",
                 headers={
                     "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY,
                     "X-Goog-FieldMask": "formattedAddress,location",
@@ -59,7 +65,7 @@ async def get_place_photo_url(place_id: str, max_width: int = 400) -> str | None
         async with httpx.AsyncClient(timeout=10.0) as client:
             # grab the photo resource name from place details
             detail_resp = await client.get(
-                f"https://places.googleapis.com/v1/places/{place_id}",
+                f"{GOOGLE_PLACES_BASE_URL}/{place_id}",
                 headers={
                     "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY,
                     "X-Goog-FieldMask": "photos",
@@ -74,7 +80,7 @@ async def get_place_photo_url(place_id: str, max_width: int = 400) -> str | None
 
             # then resolve it to a direct uri (no redirect)
             media_resp = await client.get(
-                f"https://places.googleapis.com/v1/{photo_name}/media",
+                f"{GOOGLE_PLACES_V1_URL}/{photo_name}/media",
                 params={
                     "maxWidthPx": max_width,
                     "skipHttpRedirect": "true",

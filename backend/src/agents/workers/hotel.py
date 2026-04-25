@@ -3,10 +3,10 @@ from datetime import date, timedelta
 from langchain_core.messages import HumanMessage, SystemMessage
 from pydantic import ValidationError
 
-from src.agents.llm import get_gemini_model
+from src.agents.llm import get_gemini_model, extract_json_from_response
 from src.prompts.hotel import HOTEL_SEARCH_PROMPT
 from src.state.models import AccommodationPlan, CityAccommodation, HotelOption
-from src.tools.grounding import extract_json_from_response, get_grounding_tool
+from src.tools.grounding import get_search_grounding_tool
 from src.tools.places import USE_GOOGLE_PLACES, enrich_with_places_api, get_place_photo_url
 
 
@@ -82,7 +82,7 @@ async def hotel_search_node(state: dict) -> dict:
     Search hotels for all destinations, return AccommodationPlan.
     """
     llm = get_gemini_model()
-    llm_with_search = llm.bind_tools([get_grounding_tool()])
+    llm_with_search = llm.bind_tools([get_search_grounding_tool()])
 
     # Backward compat: support single destination field
     destinations = state.get("destinations") or []

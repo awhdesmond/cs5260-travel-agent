@@ -1,48 +1,101 @@
 import os
 import httpx
+import logging
 from datetime import datetime
 from urllib.parse import quote, urlencode
 
-import logging
 logger = logging.getLogger(__name__)
 
 SERPAPI_KEY = os.getenv("SERPAPI_KEY", "")
 
-# Common city -> IATA airport code mapping (Southeast Asia focus + major hubs)
 _IATA_MAP: dict[str, str] = {
     "singapore": "SIN",
-    "tokyo": "TYO", "osaka": "KIX", "kyoto": "KIX", "nagoya": "NGO",
-    "fukuoka": "FUK", "sapporo": "CTS", "naha": "OKA", "okinawa": "OKA",
-    "bangkok": "BKK", "chiang mai": "CNX", "phuket": "HKT", "krabi": "KBV",
-    "kuala lumpur": "KUL", "penang": "PEN", "langkawi": "LGK", "kota kinabalu": "BKI",
-    "jakarta": "CGK", "bali": "DPS", "denpasar": "DPS", "yogyakarta": "JOG",
+    "tokyo": "TYO",
+    "osaka": "KIX",
+    "kyoto": "KIX",
+    "nagoya": "NGO",
+    "fukuoka": "FUK",
+    "sapporo": "CTS",
+    "naha": "OKA",
+    "okinawa": "OKA",
+    "bangkok": "BKK",
+    "chiang mai": "CNX",
+    "phuket": "HKT",
+    "krabi": "KBV",
+    "kuala lumpur": "KUL",
+    "penang": "PEN",
+    "langkawi": "LGK",
+    "kota kinabalu": "BKI",
+    "jakarta": "CGK",
+    "bali": "DPS",
+    "denpasar": "DPS",
+    "yogyakarta": "JOG",
     "surabaya": "SUB",
     "manila": "MNL", "cebu": "CEB",
-    "ho chi minh city": "SGN", "hanoi": "HAN", "da nang": "DAD",
-    "hong kong": "HKG", "macau": "MFM",
-    "taipei": "TPE", "kaohsiung": "KHH",
-    "seoul": "ICN", "busan": "PUS", "jeju": "CJU",
-    "beijing": "PEK", "shanghai": "PVG", "guangzhou": "CAN", "shenzhen": "SZX",
-    "chengdu": "CTU", "chongqing": "CKG", "kunming": "KMG", "xi'an": "XIY",
-    "xian": "XIY", "hangzhou": "HGH", "nanjing": "NKG", "wuhan": "WUH",
-    "lijiang": "LJG", "dali": "DLU", "guilin": "KWL", "zhangjiajie": "DYG",
-    "sydney": "SYD", "melbourne": "MEL", "brisbane": "BNE", "perth": "PER",
-    "auckland": "AKL", "queenstown": "ZQN",
-    "london": "LHR", "paris": "CDG", "rome": "FCO", "barcelona": "BCN",
-    "amsterdam": "AMS", "berlin": "BER", "munich": "MUC", "zurich": "ZRH",
-    "vienna": "VIE", "prague": "PRG", "istanbul": "IST", "dubai": "DXB",
-    "new york": "JFK", "los angeles": "LAX", "san francisco": "SFO",
-    "mumbai": "BOM", "delhi": "DEL", "new delhi": "DEL",
-    "colombo": "CMB", "kathmandu": "KTM", "yangon": "RGN",
-    "phnom penh": "PNH", "siem reap": "REP", "vientiane": "VTE",
+    "ho chi minh city":
+    "SGN", "hanoi":
+    "HAN", "da nang": "DAD",
+    "hong kong": "HKG",
+    "macau": "MFM",
+    "taipei": "TPE",
+    "kaohsiung": "KHH",
+    "seoul": "ICN",
+    "busan": "PUS",
+    "jeju": "CJU",
+    "beijing": "PEK",
+    "shanghai": "PVG",
+    "guangzhou": "CAN",
+    "shenzhen": "SZX",
+    "chengdu": "CTU",
+    "chongqing": "CKG",
+    "kunming": "KMG",
+    "xi'an": "XIY",
+    "xian": "XIY",
+    "hangzhou": "HGH",
+    "nanjing": "NKG",
+    "wuhan": "WUH",
+    "lijiang": "LJG",
+    "dali": "DLU",
+    "guilin": "KWL",
+    "zhangjiajie": "DYG",
+    "sydney": "SYD",
+    "melbourne": "MEL",
+    "brisbane": "BNE",
+    "perth": "PER",
+    "auckland": "AKL",
+    "queenstown": "ZQN",
+    "london": "LHR",
+    "paris": "CDG",
+    "rome": "FCO",
+    "barcelona": "BCN",
+    "amsterdam": "AMS",
+    "berlin": "BER",
+    "munich": "MUC",
+    "zurich": "ZRH",
+    "vienna": "VIE",
+    "prague": "PRG",
+    "istanbul": "IST",
+    "dubai": "DXB",
+    "new york": "JFK",
+    "los angeles": "LAX",
+    "san francisco": "SFO",
+    "mumbai": "BOM",
+    "delhi": "DEL",
+    "new delhi": "DEL",
+    "colombo": "CMB",
+    "kathmandu": "KTM",
+    "yangon": "RGN",
+    "phnom penh": "PNH",
+    "siem reap": "REP",
+    "vientiane": "VTE",
 }
-
 
 def get_iata_code(city: str) -> str | None:
     """
     Look up IATA code for a city name. Returns None if not found.
     """
     return _IATA_MAP.get(city.lower().strip())
+
 
 
 def _google_flights_url(origin_city: str, dest_city: str, date: str) -> str:

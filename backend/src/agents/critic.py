@@ -2,7 +2,7 @@
 import json
 import re
 
-from src.agents.llm import get_gemini_model
+from src.agents.llm import get_gemini_model, extract_json_from_response
 from src.prompts.critic import (
     CRITIC_LLM_PROMPT,
     OUTPUT_SCHEMA_CLEAN,
@@ -19,7 +19,6 @@ from src.state.models import (
     TimeBlockViolation,
     Violation,
 )
-from src.tools.grounding import extract_json_from_response
 from src.state.blackboard import TravelBlackboard
 from src.utils import haversine, median_latlng, parse_time
 

@@ -2,10 +2,10 @@ import asyncio
 import json
 import logging
 
-from src.agents.llm import get_gemini_model
+from src.agents.llm import get_gemini_model, extract_json_from_response
 from src.prompts.edit import EDIT_ITINERARY_PROMPT
 from src.state.models import DailySchedule
-from src.tools.grounding import extract_json_from_response, get_grounding_tool
+from src.tools.grounding import get_search_grounding_tool
 from src.utils import parse_duration_minutes
 from src.agents.workers.flight import flight_search_node
 from src.agents.workers.transport import intercity_transport_node
@@ -277,7 +277,7 @@ async def edit_itinerary_node(itinerary: dict, edit_request: str) -> dict:
     try:
         llm = get_gemini_model()
         if _needs_grounding(edit_request):
-            llm_bound = llm.bind_tools([get_grounding_tool()])
+            llm_bound = llm.bind_tools([get_search_grounding_tool()])
         else:
             llm_bound = llm
 

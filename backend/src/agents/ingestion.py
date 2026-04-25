@@ -8,7 +8,7 @@ from src.agents.llm import get_gemini_model
 from src.models.ingestion import IngestionResult, InputType
 from src.prompts.ingestion import IMAGE_EXTRACTION_PROMPT, TEXT_EXTRACTION_PROMPT, URL_EXTRACTION_PROMPT
 from src.scraper import scrape_url
-from src.tools.grounding import normalize_content
+from src.agents.llm import normalize_content
 from src.state.blackboard import TravelBlackboard
 
 def get_ingestion_llm():

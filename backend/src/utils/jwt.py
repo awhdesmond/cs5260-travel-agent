@@ -4,6 +4,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 
+ENV_JWT_SECRET= "JWT_SECRET"
+
 JWT_ALGORITHM = "HS256"
 JWT_AUDIENCE = "authenticated"
 
@@ -21,7 +23,7 @@ async def get_current_user(creds: HTTPAuthorizationCredentials = Depends(http_be
 
     Raises HTTPException 401 if token is missing, invalid, or expired.
     """
-    jwt_secret = os.environ.get("JWT_SECRET", "")
+    jwt_secret = os.environ.get(ENV_JWT_SECRET, "")
     jwt_headers = {"WWW-Authenticate": "Bearer"}
 
     if creds is None:

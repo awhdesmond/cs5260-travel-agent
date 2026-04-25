@@ -2,11 +2,11 @@ import logging
 from langchain_core.messages import HumanMessage, SystemMessage
 from pydantic import ValidationError
 
-from src.agents.llm import get_gemini_model
+from src.agents.llm import get_gemini_model, extract_json_from_response
 from src.prompts.flight import FLIGHT_SEARCH_PROMPT
 from src.state.models import TransportPlan
-from src.tools.grounding import extract_json_from_response, get_grounding_tool
-from src.tools.serpapi_flights import get_iata_code, is_available, search_flights
+from src.tools.grounding import get_search_grounding_tool
+from src.tools.serpapi_flights import get_iata_code, search_flights
 from src.state.blackboard import TravelBlackboard
 
 
@@ -24,9 +24,6 @@ async def _search_via_serpapi(
     """
     Try SerpAPI for both outbound and inbound flights.
     """
-    if not is_available():
-        return None
-
     origin_code = get_iata_code(origin)
     outbound_code = get_iata_code(outbound_city)
     inbound_code = get_iata_code(inbound_city)
@@ -78,7 +75,7 @@ async def _search_via_gemini(
     max_options: int,
 ) -> dict | None:
     llm = get_gemini_model()
-    llm_with_search = llm.bind_tools([get_grounding_tool()])
+    llm_with_search = llm.bind_tools([get_search_grounding_tool()])
 
     prompt = (
         f"Search for flights for this trip:\n"

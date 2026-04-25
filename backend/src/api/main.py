@@ -1,5 +1,6 @@
 import os
 import logging
+from pathlib import Path
 from dotenv import load_dotenv
 from contextlib import asynccontextmanager
 
@@ -17,13 +18,14 @@ from src.api.routes.plan_select import router as select_router
 from src.api.routes.plan_stream import router as stream_router
 
 
+logger = logging.getLogger(__name__)
+
 # Load .env before LLM initialization
-load_dotenv()
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger = logging.getLogger(__name__)
-
     try:
         app.state.supervisor_graph = build_supervisor_graph().compile()
         app.state.supervisor_recursion_limit = SUPERVISOR_RECURSION_LIMIT
