@@ -1,6 +1,6 @@
 # CS5260 Travel Planner Agent
 
-NUS CS5260 Neural Networks and Deep Learning II, AY 2025/26 Semester 2 — Group 9.
+NUS CS5260 Neural Networks and Deep Learning II, AY 2025/26 Semester 2 — Group 9 (Canvas), Group 7 (Presentation).
 
 A multi-agent AI travel planner that generates complete day-by-day itineraries (flights, hotels, activities) from natural language input. The system implements two orchestration architectures — **Supervisor** (3-level hierarchy) and **Swarm** (flat peer-to-peer) — using identical worker agents, enabling a controlled empirical comparison of multi-agent coordination patterns.
 
